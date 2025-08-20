@@ -2,10 +2,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 from fastapi import FastAPI
 
-from routers import auth
+from routers import auth, posts
 
 # Reloading the pages/pages.py file
-from pages import register_page, login_page
+from static import posts_page, register_page, login_page
 
 # Logging configuration
 log_handler = RotatingFileHandler(
@@ -26,4 +26,5 @@ logging.getLogger("watchfiles").setLevel(logging.WARNING)
 logging.info("Starting the pleo.")
 app = FastAPI()
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(posts.router, prefix="/post", tags=["post"])
 logging.info("Pleo started.")
