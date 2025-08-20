@@ -11,108 +11,85 @@
                 display: flex;
                 justify-content: center;
                 align-items: flex-start;
-                background: #f3f4f6;
-                font-family: sans-serif;
                 padding: 20px;
+                background: #121212;
+                font-family: "Segoe UI", sans-serif;
+                color: #e0e0e0;
             }
-
             .card {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-                width: 500px;
+                background: #1e1e1e;
+                padding: 30px;
+                border-radius: 12px;
+                width: 540px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             }
-
             h1 {
-                margin: 0 0 16px;
-                font-size: 20px;
                 text-align: center;
+                margin-bottom: 20px;
             }
-
             .field {
-                margin-bottom: 12px;
+                margin-bottom: 15px;
                 display: flex;
                 flex-direction: column;
             }
-
             label {
+                margin-bottom: 6px;
                 font-size: 14px;
-                margin-bottom: 4px;
+                color: #bbb;
             }
-
             textarea {
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #333;
+                background: #2a2a2a;
+                color: #e0e0e0;
                 font-size: 14px;
                 resize: vertical;
             }
-
-            .actions {
-                margin-top: 12px;
+            textarea:focus {
+                border-color: #4f46e5;
+                outline: none;
             }
-
-            button {
+            .actions button {
                 width: 100%;
-                padding: 10px;
+                padding: 12px;
                 border: none;
-                border-radius: 4px;
-                background: #4b5563;
+                border-radius: 6px;
+                background: #4f46e5;
                 color: white;
                 font-size: 14px;
                 cursor: pointer;
+                transition: 0.2s;
             }
-
-            button:hover {
-                background: #374151;
+            .actions button:hover {
+                background: #3730a3;
             }
-
             .message {
                 text-align: center;
+                margin-top: 10px;
                 font-size: 14px;
-                margin-top: 8px;
             }
-
             .error {
-                color: #dc2626;
+                color: #f87171;
             }
             .success {
-                color: #16a34a;
+                color: #4ade80;
             }
-
             .posts {
                 margin-top: 20px;
             }
-
             .post {
-                border-bottom: 1px solid #ddd;
-                padding: 10px 0;
-            }
-
-            .post h1 {
-                font-size: 18px;
-                margin: 8px 0;
-            }
-            .post h2 {
-                font-size: 16px;
-                margin: 6px 0;
-            }
-            .post p {
-                margin: 4px 0;
-            }
-            .post ul {
-                margin: 4px 0 4px 20px;
-            }
-            .post li {
-                margin: 2px 0;
+                background: #2a2a2a;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                white-space: pre-wrap;
             }
         </style>
     </head>
     <body>
-        <main class="card">
+        <main class="card" role="main">
             <h1>Posts Board</h1>
-
             <form id="postForm">
                 <div class="field">
                     <label for="postContent"
@@ -131,9 +108,7 @@
                 <p id="message" class="message"></p>
             </form>
 
-            <div class="posts" id="postsContainer">
-                <!-- Posts will appear here -->
-            </div>
+            <div class="posts" id="postsContainer"></div>
         </main>
 
         <script>
@@ -144,12 +119,11 @@
 
                 for (let line of lines) {
                     line = line.trim();
-
-                    if (line.startsWith("## ")) {
+                    if (line.startsWith("## "))
                         html += `<h2>${line.slice(3)}</h2>`;
-                    } else if (line.startsWith("# ")) {
+                    else if (line.startsWith("# "))
                         html += `<h1>${line.slice(2)}</h1>`;
-                    } else if (line.startsWith("- ")) {
+                    else if (line.startsWith("- ")) {
                         if (!inList) {
                             html += "<ul>";
                             inList = true;
@@ -180,11 +154,7 @@
             postForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 message.textContent = "";
-
                 const content = document.getElementById("postContent").value;
-
-                console.log("Trying to add post with content:");
-                console.log(content);
 
                 try {
                     const res = await fetch("/post", {

@@ -12,9 +12,9 @@ posts = []
 
 
 @router.get("/")
-async def get_index_page():
+async def get_post_page():
     return HTMLResponse(
-        open("pages/posts.html", "r", encoding="utf-8").read(),
+        open("static/pages/post.html", "r", encoding="utf-8").read(),
         200,
         {"Content-Type": "text/html"},
         media_type="text/html",
