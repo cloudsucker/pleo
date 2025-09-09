@@ -2,10 +2,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 from fastapi import FastAPI
 
-from routers import auth, post
+from app.routers import auth, post
 
 # Reloading the pages/pages.py file
-from static import post_page, register_page, login_page
+from app.static import post_page, register_page, login_page
 
 # Logging configuration
 log_handler = RotatingFileHandler(

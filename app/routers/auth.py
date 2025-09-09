@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.exceptions import HTTPException
 
-from models import UserPassword
-from static import register_page, login_page
+from app.models import UserPassword
+from app.static import register_page, login_page
 
 
 logger = logging.getLogger(__name__)

@@ -1,0 +1,20 @@
+services:
+    pleo-web:
+        build: .
+        container_name: pleo-web
+        ports:
+            - "9999:9999"
+        volumes:
+            - .:/app
+        depends_on:
+            - pleo-db
+
+    pleo-db:
+        image: postgres
+        container_name: pleo-db
+        environment:
+            POSTGRES_USER: pleo_user
+            POSTGRES_PASSWORD: pleo_pass
+            POSTGRES_DB: pleo-db
+        ports:
+            - "5432:5432"

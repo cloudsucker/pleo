@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, HTMLResponse
 
-from models import Post
+from app.models import Post
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -14,7 +14,7 @@ posts = []
 @router.get("/")
 async def get_post_page():
     return HTMLResponse(
-        open("static/pages/post.html", "r", encoding="utf-8").read(),
+        open("app/static/pages/post.html", "r", encoding="utf-8").read(),
         200,
         {"Content-Type": "text/html"},
         media_type="text/html",
