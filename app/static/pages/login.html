@@ -131,14 +131,16 @@
             </form>
         </main>
         <script>
-            const form = document.getElementById("loginForm");
-            const message = document.getElementById("message");
+            const loginForm = document.getElementById("loginForm");
+            const loginMessage = document.getElementById("message");
 
-            form.addEventListener("submit", async (e) => {
+            loginForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                message.textContent = "";
-                const formData = new FormData(form);
+                loginMessage.textContent = "";
+
+                const formData = new FormData(loginForm);
                 const data = Object.fromEntries(formData.entries());
+
                 try {
                     const res = await fetch("/auth/login", {
                         method: "POST",
@@ -146,18 +148,26 @@
                         body: JSON.stringify(data),
                         credentials: "include",
                     });
+
                     const res_data = await res.json();
                     if (res_data.status === 200) {
-                        message.textContent = res_data.message;
-                        message.className = "message success";
+                        localStorage.setItem("user_id", res_data.user_id);
+                        localStorage.setItem("username", res_data.username);
+                        loginMessage.textContent = res_data.message;
+                        loginMessage.className = "message success";
+
+                        // редирект после логина
+                        setTimeout(() => {
+                            window.location.href = "/";
+                        }, 1000);
                     } else {
-                        message.textContent =
+                        loginMessage.textContent =
                             res_data.error || "Invalid credentials";
-                        message.className = "message error";
+                        loginMessage.className = "message error";
                     }
                 } catch (err) {
-                    message.textContent = err.message;
-                    message.className = "message error";
+                    loginMessage.textContent = err.message;
+                    loginMessage.className = "message error";
                 }
             });
         </script>

@@ -1,1 +1,1 @@
-from app.static.pages import register_page, login_page, post_page
+from static.pages import register_page, login_page, post_page, home_page

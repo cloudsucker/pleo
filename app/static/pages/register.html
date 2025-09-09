@@ -137,19 +137,22 @@
             </form>
         </main>
         <script>
-            const form = document.getElementById("registerForm");
-            const message = document.getElementById("message");
+            const registerForm = document.getElementById("registerForm");
+            const registerMessage = document.getElementById("message");
 
-            form.addEventListener("submit", async (e) => {
+            registerForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                message.textContent = "";
-                const formData = new FormData(form);
+                registerMessage.textContent = "";
+
+                const formData = new FormData(registerForm);
                 const data = Object.fromEntries(formData.entries());
+
                 if (data.password !== data.confirm_password) {
-                    message.textContent = "Passwords do not match!";
-                    message.className = "message error";
+                    registerMessage.textContent = "Passwords do not match!";
+                    registerMessage.className = "message error";
                     return;
                 }
+
                 try {
                     const res = await fetch("/auth/register", {
                         method: "POST",
@@ -160,18 +163,21 @@
                         }),
                         credentials: "include",
                     });
+
                     const res_data = await res.json();
                     if (res_data.status === 200) {
-                        message.textContent = res_data.message;
-                        message.className = "message success";
+                        registerMessage.textContent = res_data.message;
+                        registerMessage.className = "message success";
+                        localStorage.setItem("user_id", res_data.user_id);
+                        localStorage.setItem("username", res_data.username);
                     } else {
-                        message.textContent =
+                        registerMessage.textContent =
                             res_data.error || "Registration failed";
-                        message.className = "message error";
+                        registerMessage.className = "message error";
                     }
                 } catch (err) {
-                    message.textContent = err.message;
-                    message.className = "message error";
+                    registerMessage.textContent = err.message;
+                    registerMessage.className = "message error";
                 }
             });
         </script>

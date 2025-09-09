@@ -1,3 +1,5 @@
 fastapi[standard]
 jinja2
-bcrypt
+passlib
+sqlalchemy
+psycopg2-binary

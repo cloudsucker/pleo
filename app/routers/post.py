@@ -2,13 +2,13 @@ import logging
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, HTMLResponse
 
-from app.models import Post
+from schemas import PostData
+
+from db import SessionLocal
+from models import Post
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-
-posts = []
 
 
 @router.get("/")
@@ -22,11 +22,24 @@ async def get_post_page():
 
 
 @router.post("/")
-async def add_post(content: Post):
-    posts.append(content.text)
-    return JSONResponse(
-        {"message": "Post added successfully"},
-        200,
-        {"Content-Type": "application/json"},
-        media_type="application/json",
-    )
+async def add_post(post_data: PostData):
+
+    db = SessionLocal()
+
+    try:
+        post = Post(author_id=post_data.author_id, content=post_data.text)
+        db.add(post)
+        db.commit()
+        db.refresh(post)
+
+        return JSONResponse(
+            {
+                "post_id": post.id,
+                "message": "Post added successfully",
+                "status": 200,
+            },
+            media_type="application/json",
+        )
+
+    finally:
+        db.close()

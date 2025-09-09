@@ -1,16 +1,6 @@
 from pydantic import BaseModel, field_validator
 
 
-class Post(BaseModel):
-    text: str
-
-    @field_validator("text")
-    def validate_text(cls, v):
-        if not 0 < len(v) <= 1000:
-            raise ValueError("Text must be between 1 and 1000 characters long.")
-        return v
-
-
 class UserPassword(BaseModel):
     username: str
     password: str

@@ -1,1 +1,1 @@
-from app.routers import auth, post
+from routers import auth, post
