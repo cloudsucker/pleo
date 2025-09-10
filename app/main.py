@@ -2,10 +2,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 from fastapi import FastAPI
 
-from routers import auth, post, index
+from routers import auth, post, index, profile
 
 # Reloading the pages/pages.py file
-from static import post_page, register_page, login_page
+from static import _posts_template_page, register_page, login_page
 
 from db import Base, engine
 from models import User, Post
@@ -36,6 +36,7 @@ logging.info("Starting the pleo.")
 
 app = FastAPI()
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(profile.router, prefix="/profile", tags=["profile"])
 app.include_router(post.router, prefix="/post", tags=["post"])
 app.include_router(index.router, prefix="", tags=["index"])
 

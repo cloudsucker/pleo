@@ -1,0 +1,6 @@
+<div class="post">
+    {{ post.text | e | nl2br }}
+    <div class="meta">
+        Posted by {{ post.author_id }} at {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}
+    </div>
+</div>

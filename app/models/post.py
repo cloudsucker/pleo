@@ -17,4 +17,4 @@ class Post(Base):
     )
     deleted_at = Column(TIMESTAMP, nullable=True)
 
-    author_obj = relationship("User", backref="posts")
+    author_obj = relationship("User", backref="posts", foreign_keys=[author_id])

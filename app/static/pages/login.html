@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,7 +15,6 @@
                 font-family: "Segoe UI", sans-serif;
                 color: #e0e0e0;
             }
-
             .card {
                 background: #1e1e1e;
                 padding: 30px;
@@ -23,25 +22,21 @@
                 width: 320px;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             }
-
             h1 {
                 text-align: center;
                 margin-bottom: 20px;
                 font-size: 22px;
             }
-
             .field {
                 margin-bottom: 15px;
                 display: flex;
                 flex-direction: column;
             }
-
             label {
                 margin-bottom: 6px;
                 font-size: 14px;
                 color: #bbb;
             }
-
             input {
                 padding: 10px;
                 border-radius: 6px;
@@ -50,12 +45,10 @@
                 color: #e0e0e0;
                 font-size: 14px;
             }
-
             input:focus {
                 border-color: #4f46e5;
                 outline: none;
             }
-
             .actions button {
                 width: 100%;
                 padding: 12px;
@@ -67,35 +60,30 @@
                 cursor: pointer;
                 transition: 0.2s;
             }
-
             .actions button:hover {
                 background: #3730a3;
             }
-
             .message {
                 text-align: center;
                 margin-top: 10px;
                 font-size: 14px;
             }
-
             .error {
                 color: #f87171;
             }
             .success {
                 color: #4ade80;
             }
-
             .footer {
                 margin-top: 18px;
                 font-size: 13px;
                 text-align: center;
+                line-height: 1.5;
             }
-
             .footer a {
                 color: #818cf8;
                 text-decoration: none;
             }
-
             .footer a:hover {
                 text-decoration: underline;
             }
@@ -122,14 +110,15 @@
                     <button type="submit">Sign in</button>
                 </div>
                 <p id="message" class="message"></p>
-                <p class="footer">
-                    Have no account? <a href="/auth/register">Sign up</a>.
-                </p>
-                <p class="footer">
-                    Some troubles? <a href="/support">Contact support</a>.
-                </p>
             </form>
+            <div class="footer">
+                Don't have an account? <a href="/auth/register">Sign Up</a
+                ><br />
+                Forgot your password?
+                <a href="/auth/forgot-password">Contact Support</a>
+            </div>
         </main>
+
         <script>
             const loginForm = document.getElementById("loginForm");
             const loginMessage = document.getElementById("message");
@@ -151,15 +140,12 @@
 
                     const res_data = await res.json();
                     if (res_data.status === 200) {
-                        localStorage.setItem("user_id", res_data.user_id);
-                        localStorage.setItem("username", res_data.username);
-                        loginMessage.textContent = res_data.message;
+                        loginMessage.textContent = "Welcome!";
                         loginMessage.className = "message success";
-
-                        // редирект после логина
-                        setTimeout(() => {
-                            window.location.href = "/";
-                        }, 1000);
+                        setTimeout(
+                            () => (window.location.href = "/profile"),
+                            500
+                        );
                     } else {
                         loginMessage.textContent =
                             res_data.error || "Invalid credentials";

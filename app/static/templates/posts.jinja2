@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Posts Board</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            background: #0d0d0d;
+            font-family: "Segoe UI", sans-serif;
+            color: #e0e0e0;
+        }
+        .container {
+            width: 600px;
+        }
+        .card {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4f46e5;
+        }
+        .field {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #bbb;
+        }
+        textarea {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            font-size: 14px;
+            resize: vertical;
+        }
+        textarea:focus {
+            border-color: #4f46e5;
+            outline: none;
+        }
+        .actions button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .actions button:hover {
+            background: #3730a3;
+        }
+        .message {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .error { color: #f87171; }
+        .success { color: #4ade80; }
+
+        .posts {
+            margin-top: 10px;
+        }
+        .post {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            white-space: pre-wrap;
+            transition: 0.2s;
+        }
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>New Post</h1>
+            <div class="field">
+                <label for="postContent">What's on your mind?</label>
+                <textarea id="postContent" rows="3"></textarea>
+            </div>
+            <div class="actions">
+                <button id="addPostBtn">Post</button>
+            </div>
+            <p id="postMessage" class="message"></p>
+        </div>
+
+        <div class="posts" id="postsContainer">
+            {% for post in posts %}
+                <div class="post">
+                    <div class="post-header">
+                        <span>{{ post.author_username }}</span>
+                        <span>{{ post.created_at.strftime('%d %b %Y %H:%M') }}</span>
+                    </div>
+                    <div class="post-content">{{ post.text }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const addPostBtn = document.getElementById("addPostBtn");
+        const postContent = document.getElementById("postContent");
+        const postMessage = document.getElementById("postMessage");
+        const postsContainer = document.getElementById("postsContainer");
+
+        addPostBtn.addEventListener("click", async () => {
+            postMessage.textContent = "";
+            const content = postContent.value.trim();
+            if (!content) {
+                postMessage.textContent = "Post cannot be empty.";
+                postMessage.className = "message error";
+                return;
+            }
+
+            try {
+                const res = await fetch("/post", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "text": content }),
+                    credentials: "include"
+                });
+                const data = await res.json();
+                if (data.status === 200) {
+                    // prepend new post
+                    const newPostHTML = `
+                        <div class="post">
+                            <div class="post-header">
+                                <span>${data.username}</span>
+                                <span>${new Date(data.created_at).toLocaleString()}</span>
+                            </div>
+                            <div class="post-content">${data.content}</div>
+                        </div>`;
+                    postsContainer.insertAdjacentHTML('afterbegin', newPostHTML);
+                    postContent.value = "";
+                    postMessage.textContent = "Post added!";
+                    postMessage.className = "message success";
+                } else {
+                    postMessage.textContent = data.error || "Error adding post.";
+                    postMessage.className = "message error";
+                }
+            } catch (err) {
+                postMessage.textContent = err.message;
+                postMessage.className = "message error";
+            }
+        });
+    </script>
+</body>
+</html>
