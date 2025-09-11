@@ -1,12 +1,11 @@
 import logging
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from schemas import PostData
 
 from db import get_db, Session
 from models import User, Post
-from static import get_posts_html_page
 from routers.auth import get_current_user
 
 logger = logging.getLogger(__name__)
@@ -16,9 +15,10 @@ router = APIRouter()
 @router.get("/")
 async def get_post_page(user=Depends(get_current_user)):
     if not user:
-        return RedirectResponse(url="/login", status_code=401)
-    html_content = get_posts_html_page()
-    return HTMLResponse(html_content)
+        return RedirectResponse(url="/auth/login", status_code=302)
+
+    # returning all posts json here
+    pass
 
 
 @router.post("/")
@@ -43,3 +43,13 @@ async def add_post(
         },
         media_type="application/json",
     )
+
+
+@router.put("/{post_id}")
+async def update_post():
+    pass
+
+
+@router.delete("/{post_id}")
+async def delete_post():
+    pass

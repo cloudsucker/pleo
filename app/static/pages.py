@@ -17,8 +17,8 @@ home_page = open(PAGES_ROOT_PATH + "home.html", "r", encoding="utf-8").read()
 _account_info_template_page = open(
     TEMPLATES_ROOT_PATH + "profile.jinja2", "r", encoding="utf-8"
 ).read()
-_posts_template_page = open(
-    TEMPLATES_ROOT_PATH + "posts.jinja2", "r", encoding="utf-8"
+_wall_template_page = open(
+    TEMPLATES_ROOT_PATH + "wall.jinja2", "r", encoding="utf-8"
 ).read()
 
 logger.info("Html pages and templates was loaded.")
@@ -33,7 +33,7 @@ def get_post_data(post: Post):
     }
 
 
-def get_posts_html_page():
+def get_wall_html_page():
     db = next(get_db())
     try:
         posts = (
@@ -43,7 +43,7 @@ def get_posts_html_page():
             .all()
         )
         posts_data = [get_post_data(p) for p in posts]
-        return Template(_posts_template_page).render(posts=posts_data)
+        return Template(_wall_template_page).render(posts=posts_data)
     finally:
         db.close()
 
