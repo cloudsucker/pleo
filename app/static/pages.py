@@ -2,6 +2,7 @@ import logging
 from jinja2 import Template
 
 from db import get_db
+from schemas import PostDTO
 from models import User, Post
 
 logger = logging.getLogger(__name__)
@@ -24,15 +25,6 @@ _wall_template_page = open(
 logger.info("Html pages and templates was loaded.")
 
 
-def get_post_data(post: Post):
-    return {
-        "id": post.id,
-        "text": post.text,
-        "author_username": post.author_obj.username,
-        "created_at": post.created_at,
-    }
-
-
 def get_wall_html_page():
     db = next(get_db())
     try:
@@ -42,7 +34,7 @@ def get_wall_html_page():
             .filter_by(deleted_at=None)
             .all()
         )
-        posts_data = [get_post_data(p) for p in posts]
+        posts_data = [PostDTO.from_db(p) for p in posts]
         return Template(_wall_template_page).render(posts=posts_data)
     finally:
         db.close()

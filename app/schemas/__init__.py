@@ -1,2 +1,2 @@
-from schemas.post import PostData
+from schemas.post import PostContent, PostDTO
 from schemas.userpass import UserPassword

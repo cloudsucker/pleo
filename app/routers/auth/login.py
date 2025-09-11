@@ -24,9 +24,6 @@ async def get_login(
 ):
     user: User = db.query(User).filter(User.username == login_data.username).first()
 
-    print(login_data.username, login_data.password)
-    print(user.username)
-
     if not user or not bcrypt.verify(login_data.password, user.password_hash):
         raise HTTPException(401, "Invalid credentials.")
 
