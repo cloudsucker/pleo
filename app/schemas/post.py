@@ -1,4 +1,5 @@
 from pydantic import BaseModel, field_validator
+import markdown2
 
 from models import Post
 
@@ -16,6 +17,7 @@ class PostContent(BaseModel):
 class PostDTO(BaseModel):
     id: int
     text: str
+    author_id: int
     author_username: str
     created_at: str
 
@@ -24,7 +26,8 @@ class PostDTO(BaseModel):
         if isinstance(post, Post):
             return PostDTO(
                 id=post.id,
-                text=post.text,
+                text=markdown2.markdown(post.text, extras=["breaks"]),
+                author_id=post.author_obj.id,
                 author_username=post.author_obj.username,
                 created_at=post.created_at.strftime("%d.%m.%Y %H:%M:%S"),
             )

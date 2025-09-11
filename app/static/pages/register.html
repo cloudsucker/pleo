@@ -4,92 +4,17 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Sign up</title>
-        <style>
-            body {
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: #121212;
-                font-family: "Segoe UI", sans-serif;
-                color: #e0e0e0;
-            }
-            .card {
-                background: #1e1e1e;
-                padding: 30px;
-                border-radius: 12px;
-                width: 320px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            }
-            h1 {
-                text-align: center;
-                margin-bottom: 20px;
-                font-size: 22px;
-            }
-            .field {
-                margin-bottom: 15px;
-                display: flex;
-                flex-direction: column;
-            }
-            label {
-                margin-bottom: 6px;
-                font-size: 14px;
-                color: #bbb;
-            }
-            input {
-                padding: 10px;
-                border-radius: 6px;
-                border: 1px solid #333;
-                background: #2a2a2a;
-                color: #e0e0e0;
-                font-size: 14px;
-            }
-            input:focus {
-                border-color: #4f46e5;
-                outline: none;
-            }
-            .actions button {
-                width: 100%;
-                padding: 12px;
-                border: none;
-                border-radius: 6px;
-                background: #4f46e5;
-                color: white;
-                font-size: 14px;
-                cursor: pointer;
-                transition: 0.2s;
-            }
-            .actions button:hover {
-                background: #3730a3;
-            }
-            .message {
-                text-align: center;
-                margin-top: 10px;
-                font-size: 14px;
-            }
-            .error {
-                color: #f87171;
-            }
-            .success {
-                color: #4ade80;
-            }
-            .footer {
-                margin-top: 18px;
-                font-size: 13px;
-                text-align: center;
-            }
-            .footer a {
-                color: #818cf8;
-                text-decoration: none;
-            }
-            .footer a:hover {
-                text-decoration: underline;
-            }
-        </style>
+        <link rel="stylesheet" href="/static/styles/base.css" />
+        <link rel="stylesheet" href="/static/styles/layout.css" />
+        <link rel="stylesheet" href="/static/styles/forms.css" />
     </head>
     <body>
-        <main class="card" role="main" aria-labelledby="title">
+        <main
+            class="card"
+            role="main"
+            aria-labelledby="title"
+            style="width: 320px"
+        >
             <h1 id="title">Register</h1>
             <form id="registerForm" autocomplete="on">
                 <div class="field">
@@ -123,50 +48,47 @@
                 Already have an account? <a href="/auth/login">Sign in</a>
             </div>
         </main>
-
-        <script>
-            const registerForm = document.getElementById("registerForm");
-            const message = document.getElementById("message");
-
-            registerForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                message.textContent = "";
-
-                const formData = new FormData(registerForm);
-                const data = Object.fromEntries(formData.entries());
-
-                if (data.password !== data.password_repeat) {
-                    message.textContent = "Пароли не совпадают";
-                    message.className = "message error";
-                    return;
-                }
-
-                try {
-                    const res = await fetch("/auth/register", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data),
-                        credentials: "include",
-                    });
-
-                    const res_data = await res.json();
-                    if (res_data.status === 200) {
-                        message.textContent = "Account created!";
-                        message.className = "message success";
-                        setTimeout(
-                            () => (window.location.href = "/profile"),
-                            500
-                        );
-                    } else {
-                        message.textContent =
-                            res_data.detail || "Something went wrong.";
-                        message.className = "message error";
-                    }
-                } catch (err) {
-                    message.textContent = err.message;
-                    message.className = "message error";
-                }
-            });
-        </script>
     </body>
 </html>
+
+<script>
+    const registerForm = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+
+    registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        message.textContent = "";
+
+        const formData = new FormData(registerForm);
+        const data = Object.fromEntries(formData.entries());
+
+        if (data.password !== data.password_repeat) {
+            message.textContent = "Пароли не совпадают";
+            message.className = "message error";
+            return;
+        }
+
+        try {
+            const res = await fetch("/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+                credentials: "include",
+            });
+
+            const res_data = await res.json();
+            if (res_data.status === 200) {
+                message.textContent = "Account created!";
+                message.className = "message success";
+                setTimeout(() => (window.location.href = "/profile"), 500);
+            } else {
+                message.textContent =
+                    res_data.detail || "Something went wrong.";
+                message.className = "message error";
+            }
+        } catch (err) {
+            message.textContent = err.message;
+            message.className = "message error";
+        }
+    });
+</script>

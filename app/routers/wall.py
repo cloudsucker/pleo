@@ -13,5 +13,5 @@ router = APIRouter()
 async def get_wall_page(user=Depends(get_current_user)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=302)
-    html_content = get_wall_html_page()
+    html_content = get_wall_html_page(user)
     return HTMLResponse(html_content)

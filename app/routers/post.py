@@ -1,4 +1,5 @@
 import logging
+from datetime import timezone, datetime
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse, RedirectResponse
 
@@ -36,13 +37,17 @@ async def add_post(
     db.commit()
     db.refresh(post)
 
+    postDTO = PostDTO.from_db(post)
+
     return JSONResponse(
         {
-            "post_id": post.id,
+            "post_id": postDTO.id,
+            "author_username": postDTO.author_username,
+            "created_at": postDTO.created_at,
+            "content": postDTO.text,
             "message": "Post added successfully",
             "status": 200,
-        },
-        media_type="application/json",
+        }
     )
 
 
@@ -72,12 +77,16 @@ async def update_post(
     if not user:
         return RedirectResponse(url="/auth/login", status_code=302)
 
-    post = db.query(Post).filter(Post.id == post_id).update({"text": post_content.text})
+    post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
+        return JSONResponse({"message": "Post not found", "status": 404})
+
+    if post.author_id != user.id:
         return JSONResponse(
-            {"message": "Post not found", "status": 404}, media_type="application/json"
+            {"message": "You are not allowed to update this post.", "status": 403}
         )
 
+    post.text = post_content.text
     db.commit()
     db.refresh(post)
 
@@ -98,20 +107,18 @@ async def delete_post(
     if not user:
         return RedirectResponse(url="/auth/login", status_code=302)
 
-    post = db.query(Post).filter(Post.id == post_id).update({"deleted_at": None})
+    post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
+        return JSONResponse({"message": "Post not found", "status": 404})
+
+    if post.author_id != user.id:
         return JSONResponse(
-            {"message": "Post not found", "status": 404}, media_type="application/json"
+            {"message": "You are not allowed to delete this post.", "status": 403}
         )
 
+    post.deleted_at = datetime.now(timezone.utc)
     db.commit()
-    db.refresh(post)
 
     return JSONResponse(
-        {
-            "post_id": post.id,
-            "message": "Post deleted successfully",
-            "status": 200,
-        },
-        media_type="application/json",
+        {"post_id": post.id, "message": "Post deleted successfully", "status": 200}
     )
