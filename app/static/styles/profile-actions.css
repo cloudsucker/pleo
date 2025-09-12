@@ -1,0 +1,52 @@
+/* profile-actions.css: стили для кнопки удаления и всплывающего окна */
+.account-delete-btn {
+    background: none;
+    color: rgba(255, 0, 0, 0.678);
+    margin-top: 50px;
+    padding: 7px 14px;
+    border: 2px solid rgba(255, 0, 0, 0.5);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+.account-delete-btn:hover {
+    background: rgba(0, 0, 0, 0.178);
+}
+#delete-confirm-popup {
+    display: none;
+    position: relative;
+}
+#delete-confirm-popup .confirm-popup-inner {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 48px;
+    background: var(--surface-bg);
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    padding: 20px 10px;
+    min-width: 220px;
+    min-height: 120px;
+}
+#delete-confirm-popup .confirm-popup-inner .popup-title {
+    margin-bottom: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+#confirm-delete-btn,
+#cancel-delete-btn {
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#confirm-delete-btn {
+    background: none;
+    color: rgba(255, 0, 0, 0.678);
+    border: 2px solid rgba(255, 0, 0, 0.5);
+}
+#cancel-delete-btn {
+    background: none;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+}

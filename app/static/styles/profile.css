@@ -1,0 +1,143 @@
+.username-edit-row-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.username-edit-cell {
+    justify-content: flex-end;
+    position: relative;
+}
+.username-edit-cell .edit-btn {
+    margin-left: 10px;
+}
+.username-edit-input {
+    font-size: 15px;
+    padding: 6px 10px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 6px;
+    width: 200px;
+    margin-right: 8px;
+    text-align: left;
+}
+.change-password-form input[type="password"]#confirm-password {
+    margin-bottom: 2px;
+}
+.edit-btn {
+    color: var(--edit) !important;
+}
+.delete-btn {
+    color: var(--delete) !important;
+}
+
+/* Change Password Block */
+/* Profile Table Card Styles */
+.profile-card {
+    margin: 0 auto;
+    margin-top: 20px;
+    background: var(--surface-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px var(--shadow);
+    max-width: 600px;
+    padding: 32px 32px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    margin-bottom: 18px;
+}
+
+.profile-table td {
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--muted-color);
+}
+
+.profile-table .attr {
+    color: var(--muted-color);
+    text-align: left;
+    width: 40%;
+    font-weight: 500;
+}
+
+.profile-table .value {
+    text-align: right;
+    width: 60%;
+    font-weight: 400;
+}
+
+.edit-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+.edit-btn:hover {
+    color: var(--accent-dark);
+}
+
+.avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 18px;
+    border: 2px solid var(--accent);
+}
+
+.avatar-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.save-avatar-btn {
+    background: var(--success);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 6px;
+}
+
+.change-password-field {
+    margin-top: 30px;
+    padding: 20px !important;
+}
+
+.change-password-title {
+    text-align: left;
+}
+
+.change-password-form {
+    padding: 0px !important;
+    margin: 5px 0px !important;
+}
+
+.change-password-input {
+    margin: 5px 0px;
+}
+
+/* Notification bottom right */
+.profile-notification {
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    background: var(--surface-bg);
+    color: var(--muted-color);
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 2px 8px var(--shadow);
+    z-index: 1000;
+}

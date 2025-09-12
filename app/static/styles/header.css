@@ -1,0 +1,84 @@
+/* Шапка */
+.site-header {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-bg);
+    border-bottom: 2px solid #717985;
+}
+
+/* Блок с аватаркой и именем */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.user-avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    text-decoration: none;
+    font-size: 16px !important;
+    color: var(--text-color);
+    transition: text-shadow 0.2s ease;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.username:active,
+.username:focus {
+    text-shadow: none;
+    text-decoration: none;
+    outline: none;
+}
+
+.username:hover {
+    text-decoration: none;
+    color: var(--accent);
+}
+
+/* .main-nav {
+} */
+
+.nav-link {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 0px 10px;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: var(--accent);
+}
+
+/* Кнопка выхода */
+.logout-btn {
+    width: 100px;
+    height: 32px;
+    margin: 0px !important;
+    border: 1px solid #4b5563;
+    border-radius: 6px;
+    background: var(--surface-bg);
+    color: var(--text-color);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.logout-btn:hover {
+    border-color: var(--accent);
+}

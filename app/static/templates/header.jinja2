@@ -1,4 +1,39 @@
 <header class="site-header">
-    <span class="username">👤 {{ user.username }}</span>
-    <button id="logoutBtn">Logout</button>
+    <div class="user-info">
+        <img src="{{ user.avatar or '/static/images/default-avatar.png' }}" class="user-avatar">
+        <a href="/profile/" class="username" id="username">
+            {{ user.username }}
+        </a>
+    </div>
+
+    <nav class="main-nav">
+        <a href="/" class="nav-link">MAIN</a>
+        <a href="/wall/" class="nav-link">THE WALL</a>
+    </nav>
+
+    <button class="logout-btn" id="logout-btn">Logout</button>
 </header>
+
+
+<script>
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+        try {
+            const res = await fetch("/auth/logout/", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (res.ok) {
+                window.location.href = "/auth/login";
+            } else {
+                console.error("Logout failed:", res.status);
+            }
+        } catch (err) {
+            console.error("Error during logout:", err);
+        }
+    });
+</script>

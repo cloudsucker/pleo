@@ -1,7 +1,6 @@
 /* Контейнер для постов */
 .posts {
     width: 100%;
-    max-width: 960px;
     margin-top: 12px;
 }
 
@@ -10,17 +9,30 @@
     padding: 16px;
     border: 1px solid #374151;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 
 /* Заголовок поста */
 .post-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.post-header .author {
+.post-author-block {
+    display: flex;
+    gap: 10px;
+    align-items: first center;
+}
+
+.post-author-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-author-username {
     font-size: 14px;
     color: var(--muted-color);
 }
@@ -31,25 +43,32 @@
 }
 
 /* Кнопки иконок */
-.icon-btn {
-    background: #374151 !important;
-    border: none;
-    padding: 5px !important;
+.post-btn {
+    background: none !important;
+    padding: 3px 5px !important;
     cursor: pointer;
     color: var(--muted-color) !important;
     font-size: 12px !important;
     transition: color 0.2s;
 }
 
-.icon-btn:hover {
+.post-edit-btn {
+    border: 1px solid rgba(255, 166, 0, 0.678) !important;
+}
+
+.post-delete-btn {
+    border: 1px solid rgba(255, 0, 0, 0.548) !important;
+}
+
+.post-delete-btn .post-btn:hover {
     color: var(--text-color);
 }
 
-.edit-btn:hover {
+.post-edit-btn:hover {
     color: rgb(180, 129, 33) !important;
 }
 
-.delete-btn:hover {
+.post-delete-btn:hover {
     color: rgb(189, 67, 67) !important;
 }
 
@@ -83,29 +102,6 @@
     color: var(--accent);
     text-decoration: none;
 }
-.post-content a:hover {
-    text-decoration: underline;
-}
-
-/* Полоса прокрутки */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2a2a2a; /* серый фон */
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #555; /* темно-серый */
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
 
 /* hr */
 hr {
@@ -131,4 +127,30 @@ blockquote {
     margin-top: 8px;
     font-size: 12px;
     color: var(--muted-color);
+}
+
+.save-btn {
+    background: none;
+    color: rgba(0, 128, 0, 0.8) !important;
+    border: 1px solid rgba(0, 128, 0, 0.5);
+    padding: 7px 14px;
+    margin-right: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.save-btn:hover {
+    background: rgba(0, 128, 0, 0.08);
+}
+.cancel-btn {
+    background: none;
+    color: rgba(255, 140, 0, 0.9);
+    border: 1px solid rgba(255, 140, 0, 0.5);
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.cancel-btn:hover {
+    background: rgba(255, 140, 0, 0.08);
 }

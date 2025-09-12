@@ -13,8 +13,10 @@ TEMPLATES_ROOT_PATH = "static/templates/"
 
 login_page = open(PAGES_ROOT_PATH + "login.html", "r", encoding="utf-8").read()
 register_page = open(PAGES_ROOT_PATH + "register.html", "r", encoding="utf-8").read()
-home_page = open(PAGES_ROOT_PATH + "home.html", "r", encoding="utf-8").read()
 
+_home_page_template = open(
+    TEMPLATES_ROOT_PATH + "index.jinja2", "r", encoding="utf-8"
+).read()
 _post_block_template_page = open(
     TEMPLATES_ROOT_PATH + "_post_block.jinja2", "r", encoding="utf-8"
 ).read()
@@ -31,7 +33,18 @@ _wall_template_page = open(
 logger.info("Html pages and templates was loaded.")
 
 
-def get_wall_html_page(current_user: User):
+def get_home_html_page(user: User):
+    home_page_template = Template(_home_page_template)
+    user_dto = UserDTO.from_db(user)
+    header_fragment = Template(_header_template_page).render(user=user_dto)
+
+    return home_page_template.render(
+        header_fragment=header_fragment,
+        current_user_id=user_dto.id,
+    )
+
+
+def get_wall_html_page(user: User):
     db = next(get_db())
     try:
         posts = (
@@ -44,12 +57,16 @@ def get_wall_html_page(current_user: User):
 
         post_template = Template(_post_block_template_page)
         rendered_posts = post_template.render(
-            posts=posts_dto_list, current_user_id=current_user.id
+            posts=posts_dto_list, current_user_id=user.id
         )
+        user_dto = UserDTO.from_db(user)
 
+        header_fragment = Template(_header_template_page).render(user=user_dto)
         wall_template = Template(_wall_template_page)
         return wall_template.render(
-            posts_html=rendered_posts, current_user_id=current_user.id
+            posts_html=rendered_posts,
+            header_fragment=header_fragment,
+            current_user_id=user_dto.id,
         )
     finally:
         db.close()

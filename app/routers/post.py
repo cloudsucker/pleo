@@ -1,12 +1,11 @@
 import logging
 from datetime import timezone, datetime
-from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Query
 
-from schemas import PostContent, PostDTO
-
-from db import get_db, Session
 from models import User, Post
+from db import get_db, Session
+from schemas import PostContent, PostDTO
 from routers.auth import get_current_user
 
 
@@ -17,7 +16,7 @@ router = APIRouter()
 @router.get("/")
 async def get_all_posts(user=Depends(get_current_user), db: Session = Depends(get_db)):
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=302)
+        return JSONResponse({"message": "Unauthorized", "status": 401})
 
     posts = db.query(Post).filter(Post.deleted_at == None).all()
     return [PostDTO.from_db(p) for p in posts]
@@ -30,7 +29,7 @@ async def add_post(
     db: Session = Depends(get_db),
 ):
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=401)
+        return JSONResponse({"message": "Unauthorized", "status": 401})
 
     post = Post(author_id=user.id, text=post_content.text)
     db.add(post)
@@ -43,6 +42,7 @@ async def add_post(
         {
             "post_id": postDTO.id,
             "author_username": postDTO.author_username,
+            "author_avatar": postDTO.author_avatar,
             "created_at": postDTO.created_at,
             "content": postDTO.text,
             "message": "Post added successfully",
@@ -53,18 +53,22 @@ async def add_post(
 
 @router.get("/{post_id}")
 async def get_post(
-    post_id: int, user=Depends(get_current_user), db: Session = Depends(get_db)
+    post_id: int,
+    formatted: bool = Query(True, description="Return formatted post"),
+    user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=302)
+        return JSONResponse({"message": "Unauthorized", "status": 401})
 
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         return JSONResponse(
-            {"message": "Post not found", "status": 404}, media_type="application/json"
+            {"message": "Post not found", "status": 404},
+            media_type="application/json",
         )
 
-    return PostDTO.from_db(post)
+    return PostDTO.from_db(post, formatted)
 
 
 @router.put("/{post_id}")
@@ -75,7 +79,7 @@ async def update_post(
     db: Session = Depends(get_db),
 ):
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=302)
+        return JSONResponse({"message": "Unauthorized", "status": 401})
 
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -105,7 +109,7 @@ async def delete_post(
     post_id: int, user=Depends(get_current_user), db: Session = Depends(get_db)
 ):
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=302)
+        return JSONResponse({"message": "Unauthorized", "status": 401})
 
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:

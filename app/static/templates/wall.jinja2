@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Posts Board</title>
+    <link rel="stylesheet" href="/static/styles/header.css">
     <link rel="stylesheet" href="/static/styles/base.css">
     <link rel="stylesheet" href="/static/styles/layout.css">
     <link rel="stylesheet" href="/static/styles/forms.css">
     <link rel="stylesheet" href="/static/styles/posts.css">
 </head>
+
 <body>
+    {{ header_fragment }}
+
     <div class="container" style="width:600px;">
         <div class="card">
             <h1>The Wall</h1>
@@ -28,147 +33,171 @@
         </div>
     </div>
 </body>
+
 </html>
 
 <script>
-const currentUserId = {{ current_user_id }};
-const addPostBtn = document.getElementById("addPostBtn");
-const postContent = document.getElementById("postContent");
-const postMessage = document.getElementById("postMessage");
-const postsContainer = document.getElementById("postsContainer");
+    const addPostBtn = document.getElementById("addPostBtn");
+    const postContent = document.getElementById("postContent");
+    const postMessage = document.getElementById("postMessage");
+    const postsContainer = document.getElementById("postsContainer");
 
-// Авторасширение textarea
-function autoResizeTextarea(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = (textarea.scrollHeight) + "px";
-}
-
-// Новый пост — авторасширение при вводе
-postContent.addEventListener("input", () => autoResizeTextarea(postContent));
-
-// Публикация поста без перезагрузки
-addPostBtn.addEventListener("click", async () => {
-    const content = postContent.value.trim();
-    if (!content) {
-        postMessage.textContent = "Post cannot be empty.";
-        postMessage.className = "message error";
-        return;
+    // Авторасширение textarea
+    function autoResizeTextarea(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight) + 5 + "px";
     }
 
-    try {
-        const res = await fetch("/post", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: content }),
-            credentials: "include"
-        });
-        const data = await res.json();
-        if (data.status === 200) {
-            const newPostHTML = `
+    // Инициализация авторасширения для textarea ввода поста
+    postContent.addEventListener("input", () => autoResizeTextarea(postContent));
+    // При загрузке страницы сразу расширить, если есть текст
+    window.addEventListener("DOMContentLoaded", () => autoResizeTextarea(postContent));
+
+    // Универсальный обработчик для редактирования и удаления постов
+    postsContainer.addEventListener("click", async (e) => {
+        const postEl = e.target.closest(".post");
+        if (!postEl) return;
+        const postId = postEl.dataset.id;
+        const contentEl = postEl.querySelector(".post-content");
+
+        // DELETE
+        if (e.target.closest(".post-delete-btn")) {
+            const res = await fetch(`/post/${postId}`, { method: "DELETE", credentials: "include" });
+            const data = await res.json();
+            if (data.status === 200) {
+                postEl.remove();
+            } else {
+                alert(data.message || "Error deleting post");
+            }
+            return;
+        }
+
+        // EDIT
+        if (e.target.closest(".post-edit-btn")) {
+            if (postEl.querySelector(".edit-wrapper")) return; // уже редактируем
+
+            contentEl.style.display = "none";
+
+            // Получаем оригинальный md текст поста
+            let originalText = contentEl.textContent;
+            try {
+                const res = await fetch(`/post/${postId}?formatted=False`, { credentials: "include" });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.text) originalText = data.text;
+                }
+            } catch (err) { /* fallback: используем отрендеренный текст */ }
+
+            const textarea = document.createElement("textarea");
+            textarea.className = "field edit-area";
+            textarea.style.width = "100%";
+            textarea.value = originalText;
+            autoResizeTextarea(textarea);
+            textarea.addEventListener("input", () => autoResizeTextarea(textarea));
+
+            const saveBtn = document.createElement("button");
+            saveBtn.textContent = "Save";
+            saveBtn.className = "post-btn save-btn";
+
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.className = "post-btn cancel-btn";
+
+            const editWrapper = document.createElement("div");
+            editWrapper.className = "edit-wrapper";
+            editWrapper.appendChild(textarea);
+            editWrapper.appendChild(saveBtn);
+            editWrapper.appendChild(cancelBtn);
+            contentEl.parentNode.insertBefore(editWrapper, contentEl.nextSibling);
+            // После добавления в DOM корректно вычислить высоту
+            autoResizeTextarea(textarea);
+
+            // CANCEL
+            cancelBtn.addEventListener("click", () => {
+                editWrapper.remove();
+                contentEl.style.display = "";
+            });
+
+            // SAVE
+            saveBtn.addEventListener("click", async () => {
+                const newText = textarea.value.trim();
+                if (!newText) return alert("Post cannot be empty.");
+
+                try {
+                    const res = await fetch(`/post/${postId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ text: newText }),
+                        credentials: "include"
+                    });
+                    const data = await res.json();
+                    if (data.status === 200) {
+                        const getRes = await fetch(`/post/${postId}`, { credentials: "include" });
+                        if (getRes.ok) {
+                            const postData = await getRes.json();
+                            // Сервер возвращает HTML в postData.text
+                            contentEl.innerHTML = postData.text || newText;
+                        } else {
+                            contentEl.textContent = newText;
+                        }
+                        editWrapper.remove();
+                        contentEl.style.display = "";
+                    } else {
+                        alert(data.message || "Error updating post");
+                    }
+                } catch (err) {
+                    alert(err.message);
+                }
+            });
+        }
+    });
+
+    // Публикация поста без перезагрузки
+    addPostBtn.addEventListener("click", async () => {
+        const content = postContent.value.trim();
+        if (!content) {
+            postMessage.textContent = "Post cannot be empty.";
+            postMessage.className = "message error";
+            return;
+        }
+
+        try {
+            const res = await fetch("/post", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: content }),
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.status === 200) {
+                // Формируем HTML нового поста с актуальными классами
+                const newPostHTML = `
                 <div class="post" data-id="${data.post_id}">
                     <div class="post-header">
-                        <span class="author">${data.author_username}</span>
+                        <div class="post-author-block">
+                            <img class="post-author-avatar" src="${data.author_avatar || '/static/images/default-avatar.png'}">
+                            <span class="post-author-username">${data.author_username}</span>
+                        </div>
                         <span class="actions">
-                            <button class="icon-btn edit-btn" title="Edit">✏️</button>
-                            <button class="icon-btn delete-btn" title="Delete">🗑</button>
+                            <button class="post-btn post-edit-btn" title="Edit">Edit</button>
+                            <button class="post-btn post-delete-btn" title="Delete">Delete</button>
                         </span>
                     </div>
                     <div class="post-content field">${data.content}</div>
                     <div class="post-footer"><span class="date">${new Date(data.created_at).toLocaleString()}</span></div>
                 </div>`;
-            postsContainer.insertAdjacentHTML('afterbegin', newPostHTML);
-            postContent.value = "";
-            autoResizeTextarea(postContent);
-            postMessage.textContent = "Post added!";
-            postMessage.className = "message success";
-        } else {
-            postMessage.textContent = data.error || "Error adding post.";
+                postsContainer.insertAdjacentHTML('afterbegin', newPostHTML);
+                postContent.value = "";
+                autoResizeTextarea(postContent);
+                postMessage.textContent = "Post added!";
+                postMessage.className = "message success";
+            } else {
+                postMessage.textContent = data.error || "Error adding post.";
+                postMessage.className = "message error";
+            }
+        } catch (err) {
+            postMessage.textContent = err.message;
             postMessage.className = "message error";
         }
-    } catch (err) {
-        postMessage.textContent = err.message;
-        postMessage.className = "message error";
-    }
-});
-
-// Редактирование и удаление постов
-postsContainer.addEventListener("click", async (e) => {
-    const postEl = e.target.closest(".post");
-    if (!postEl) return;
-    const postId = postEl.dataset.id;
-    const contentEl = postEl.querySelector(".post-content");
-
-    // DELETE
-    if (e.target.closest(".delete-btn")) {
-        const res = await fetch(`/post/${postId}`, { method: "DELETE", credentials: "include" });
-        const data = await res.json();
-        if (data.status === 200) {
-            postEl.remove();
-        } else {
-            alert(data.message || "Error deleting post");
-        }
-        return;
-    }
-
-    // EDIT
-    if (e.target.closest(".edit-btn")) {
-        if (postEl.querySelector(".edit-wrapper")) return; // уже редактируем
-
-        const oldText = contentEl.textContent;
-        contentEl.style.display = "none";
-
-        const textarea = document.createElement("textarea");
-        textarea.className = "field edit-area";
-        textarea.value = oldText;
-        textarea.style.width = "100%";
-        autoResizeTextarea(textarea);
-        textarea.addEventListener("input", () => autoResizeTextarea(textarea));
-
-        const saveBtn = document.createElement("button");
-        saveBtn.textContent = "Save";
-        saveBtn.className = "icon-btn save-btn";
-
-        const cancelBtn = document.createElement("button");
-        cancelBtn.textContent = "Cancel";
-        cancelBtn.className = "icon-btn cancel-btn";
-
-        const editWrapper = document.createElement("div");
-        editWrapper.className = "edit-wrapper";
-        editWrapper.appendChild(textarea);
-        editWrapper.appendChild(saveBtn);
-        editWrapper.appendChild(cancelBtn);
-        contentEl.parentNode.insertBefore(editWrapper, contentEl.nextSibling);
-
-        // CANCEL
-        cancelBtn.addEventListener("click", () => {
-            editWrapper.remove();
-            contentEl.style.display = "";
-        });
-
-        // SAVE
-        saveBtn.addEventListener("click", async () => {
-            const newText = textarea.value.trim();
-            if (!newText) return alert("Post cannot be empty.");
-
-            try {
-                const res = await fetch(`/post/${postId}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: newText }),
-                    credentials: "include"
-                });
-                const data = await res.json();
-                if (data.status === 200) {
-                    contentEl.textContent = newText; // динамически обновляем текст
-                    editWrapper.remove();
-                    contentEl.style.display = "";
-                } else {
-                    alert(data.message || "Error updating post");
-                }
-            } catch (err) {
-                alert(err.message);
-            }
-        });
-    }
-});
+    });
 </script>

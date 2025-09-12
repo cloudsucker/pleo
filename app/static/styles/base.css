@@ -7,6 +7,8 @@
     --accent: #3b82f6;
     --accent-dark: #2563eb;
     --error: #ef4444;
+    --delete: red;
+    --edit: orange;
     --success: #10b981;
     --shadow: rgba(0, 0, 0, 0.3);
     --font-primary: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
@@ -19,15 +21,37 @@
     padding: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
-    padding-top: 64px;
     background: var(--bg-color);
     font-family: var(--font-primary);
     color: var(--text-color);
     line-height: 1.6;
+}
+
+/* Полоса прокрутки */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2a2a2a; /* серый фон */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555; /* темно-серый */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }

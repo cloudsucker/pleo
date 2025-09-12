@@ -19,23 +19,29 @@ async def get_register_page():
 
 
 @router.post("/register")
-async def get_register(
-    register_data: UserPassword, response: JSONResponse, db: Session = Depends(get_db)
-):
+async def get_register(register_data: UserPassword, db: Session = Depends(get_db)):
     existing_user = (
         db.query(User).filter(User.username == register_data.username).first()
     )
-    if existing_user:
-        raise HTTPException(401, "Username already taken.")
+
+    if existing_user and existing_user.deleted_at is None:
+        raise HTTPException(status_code=409, detail="Username already taken.")
 
     hash_pass = bcrypt.hash(register_data.password)
 
-    user = User(username=register_data.username, password_hash=hash_pass)
+    if not existing_user:
+        user = User(username=register_data.username, password_hash=hash_pass)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    else:
+        existing_user.password_hash = hash_pass
+        existing_user.deleted_at = None
+        db.commit()
+        db.refresh(existing_user)
+        user = existing_user
 
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-
+    session_id = create_user_session(db, user).session_id
     response = JSONResponse(
         content={
             "user_id": user.id,
@@ -44,10 +50,9 @@ async def get_register(
             "status": 200,
         }
     )
-
     response.set_cookie(
         key="session",
-        value=create_user_session(db, user).session_id,
+        value=session_id,
         httponly=True,
         max_age=3600,
         samesite="lax",

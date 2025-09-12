@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 
 from models import User
-from static import home_page
+from static import get_home_html_page
 from routers.auth import get_current_user
 
 logger = logging.getLogger(__name__)
@@ -20,9 +20,4 @@ async def get_home_page(user: User = Depends(get_current_user)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=302)
 
-    return HTMLResponse(
-        home_page,
-        200,
-        {"Content-Type": "text/html"},
-        media_type="text/html",
-    )
+    return get_home_html_page(user)

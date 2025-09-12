@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 
-from routers import auth, post, wall, index, profile
+from routers import user, auth, post, wall, index, profile
 
 # Reloading the pages/pages.py file
 from static import _wall_template_page, register_page, login_page
@@ -40,6 +40,7 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+app.include_router(user.router, prefix="/user", tags=["user"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(profile.router, prefix="/profile", tags=["profile"])
 app.include_router(post.router, prefix="/post", tags=["post"])
