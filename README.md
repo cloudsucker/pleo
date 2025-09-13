@@ -12,8 +12,6 @@
   </a>
 </p>
 
----
-
 **Pleo** — это минималистичная социальная сеть реализованная на FastAPI с поддержкой регистрации, авторизации, публикации постов, профилей пользователей и ленты (`The Wall`).
 
 ![logo](static/logo.png)
@@ -27,15 +25,11 @@
 ### **Регистрация и авторизация**
 
 <p align="center">
-  <figure style="display:inline-block; margin: 0 16px;">
-    <img src="static/screenshots/register.png" alt="Register page" height="320">
-    <figcaption align="center">Регистрация</figcaption>
-  </figure>
-  <figure style="display:inline-block; margin: 0 16px;">
-    <img src="static/screenshots/login.png" alt="Login page" height="320">
-    <figcaption align="center">Авторизация</figcaption>
-  </figure>
+  <img src="static/screenshots/register.png" alt="Register page" height="320">
+  <img src="static/screenshots/login.png" alt="Login page" height="320">
 </p>
+
+_Страницы регистрации и авторизации._
 
 ### **Лента постов (The Wall)**
 
@@ -72,6 +66,8 @@ cd pleo
 ```bash
 docker compose up --build
 ```
+
+Сайт станет доступен по адресу: `localhost:8080`.
 
 ### **Без Docker:**
 
@@ -110,8 +106,10 @@ cd app
 uvicorn main:app --reload
 ```
 
-> ![IMPORTANT]
-> Обратите внимание, что запуск без Docker осуществляется из директории `/app`.
+Сайт станет доступен по адресу: `localhost:8000`
+
+> [!IMPORTANT]
+> Важно, при запуске без Docker Compose вам нужно самому поднять PostgreSQL и заменить параметры подключения в файле `app/db.py`.
 
 ## **🧪 Тестирование**
 

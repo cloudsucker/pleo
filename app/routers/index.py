@@ -12,9 +12,6 @@ router = APIRouter()
 users = {}
 
 
-# = = = = = = = PAGE GETTERS = = = = = = = =
-
-
 @router.get("/", response_class=HTMLResponse)
 async def get_home_page(user: User = Depends(get_current_user)):
     if not user:
