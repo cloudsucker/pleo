@@ -110,6 +110,8 @@ uvicorn main:app --reload
 
 > [!IMPORTANT]
 > Важно, при запуске без Docker Compose вам нужно самому поднять PostgreSQL и заменить параметры подключения в файле `app/db.py`.
+> Без этого вы будете получать ошибку `UnicodeDecodeError: 'utf-8' codec can't decode byte 0xdd in position 52: invalid continuation byte`, так как на текущий момент
+> в `DATABASE_URL = "postgresql+psycopg2://pleo_user:pleo_pass@pleo-db:5432/pleo-db"` записано имя Docker-контейнера.
 
 ## **🧪 Тестирование**
 
