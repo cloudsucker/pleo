@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from routers import user, auth, post, wall, index, profile
 
 # Reloading the pages/pages.py file
-from static import _wall_template_page, register_page, login_page
+from static import register_page, login_page
 
 from db import Base, engine
 from models import User, Post

@@ -3,7 +3,7 @@ services:
         build: .
         container_name: pleo-web
         ports:
-            - "9999:9999"
+            - "8080:80"
         volumes:
             - ./app:/app
         depends_on:

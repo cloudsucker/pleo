@@ -63,7 +63,7 @@
         const data = Object.fromEntries(formData.entries());
 
         if (data.password !== data.password_repeat) {
-            message.textContent = "Пароли не совпадают";
+            message.textContent = "Passwords do not match.";
             message.className = "message error";
             return;
         }
