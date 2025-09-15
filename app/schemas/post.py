@@ -19,7 +19,7 @@ class PostDTO(BaseModel):
     text: str
     author_id: int
     author_username: str
-    author_avatar: str
+    author_avatar: str | None
     created_at: str
 
     @classmethod
@@ -34,7 +34,7 @@ class PostDTO(BaseModel):
                 text=text,
                 author_id=post.author_obj.id,
                 author_username=post.author_obj.username,
-                author_avatar=post.author_obj.avatar,
+                author_avatar=post.author_obj.avatar or None,
                 created_at=post.created_at.strftime("%d.%m.%Y %H:%M:%S"),
             )
         else:

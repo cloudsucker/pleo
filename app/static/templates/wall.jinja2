@@ -184,7 +184,7 @@
                         </span>
                     </div>
                     <div class="post-content field">${data.content}</div>
-                    <div class="post-footer"><span class="date">${new Date(data.created_at).toLocaleString()}</span></div>
+                        <div class="post-footer"><span class="date">${data.created_at}</span></div>
                 </div>`;
                 postsContainer.insertAdjacentHTML('afterbegin', newPostHTML);
                 postContent.value = "";

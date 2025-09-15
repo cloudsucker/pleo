@@ -8,13 +8,116 @@
     <link rel="stylesheet" href="/static/styles/base.css">
     <link rel="stylesheet" href="/static/styles/layout.css">
     <link rel="stylesheet" href="/static/styles/header.css">
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 0;
+        }
+
+        .card {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        li {
+            margin-left: 20px;
+            line-height: 1.5;
+        }
+
+        .github-card {
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+            max-width: 400px;
+            margin: 30px auto 0 auto;
+            padding: 25px 20px;
+            border-radius: 12px;
+            background: #45626b;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.377), inset 0 0 32px 0 rgba(0, 0, 0, 0.747);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: center;
+            text-shadow: 1px 1px 3px black;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .github-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 5px 14px rgba(0, 0, 0, 0.562), inset 0 0 32px 0 rgba(0, 0, 0, 0.747);
+        }
+
+        .github-card h3 {
+            margin: 10px 0 15px 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .github-card h3 img {
+            width: 30px;
+            height: 30px;
+            filter: brightness(0) invert(1) drop-shadow(1px 1px 2px black);
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .github-card a {
+            color: #fff;
+            font-weight: 500;
+            word-break: break-all;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .github-card a:hover {
+            color: #ffffff;
+        }
+
+        .github-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: url('https://raw.githubusercontent.com/cloudsucker/pleo/main/static/logo.png') center center / 140% no-repeat;
+            filter: blur(1px);
+            opacity: 0.6;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .github-card>* {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 </head>
 
 <body>
     {{ header_fragment }}
 
     <div class="card">
-        <h1>COMING SOON</h1>
+        <h1><b>Welcome to PLEO</b></h1>
+        <p><b>PLEO</b> is a minimalistic social network implemented on <b>FastAPI</b> with support for:</p>
+        <ul style="margin-top:0; margin-bottom:1em;">
+            <li>Registration and authorization</li>
+            <li>Publishing posts</li>
+            <li>User profiles</li>
+            <li>Feeds (<a href="/wall/">The Wall</a>)</li>
+        </ul>
+
+        <div class="github-card">
+            <a href="https://github.com/cloudsucker/pleo" target="_blank"
+                style="display:block;text-decoration:none;color:inherit;">
+                <h3>
+                    <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub logo">
+                    GitHub
+                </h3>
+                <div style="font-size:1.05em;word-break:break-all;">github.com/cloudsucker/pleo</div>
+            </a>
+        </div>
     </div>
 </body>
 
